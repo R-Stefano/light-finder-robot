@@ -115,7 +115,6 @@ void loop() {
 }
 
 void mainLoop() {
-  Serial.println("-------------------");
   //update light value measurement
   updateLightsValues();
   //update distance measurement
@@ -164,19 +163,22 @@ void mainLoop() {
     //keep adjusting the direction towards the light source
     updateDirection();
   }
-  //every 2 seconds
-  if (timeCounter/2000==1) {
-    Serial.println("Updating screen");
+
+  //every second update the screen
+  if (timeCounter%1000==0) {
+    Serial.println("Updating screen..");
     DisplayInformation();
-    
+
     timeCounter=0;
-  } else {
-    timeCounter += 10;
   }
+  
+  timeCounter += 10;
   delay(10);
 }
 
 void configuration() {
+    Serial.println("Configuring robot..");
+    Serial.println("1. Testing motors..");
     oled.println("Configuring robot..");
     oled.println("1. Testing motors..");
     //testing motors, forw, backw, make 360 degree wheels turn, left and right
@@ -189,7 +191,9 @@ void configuration() {
     updateDirection((char)'r');
     delay(rotationTime*8);
     updateDirection((char)'s');
-    
+
+    Serial.println("2. Scanning for");
+    Serial.println("light sources..");
     oled.println("2. Scanning for");
     oled.println("light sources..");
     //360degree scanning for light source
@@ -205,17 +209,7 @@ void configuration() {
 void updateDirection() {
   long diff=RLLights[0] - RLLights[1];
   int threshold=lightsDiffThreshold; //move right, left only if above this number
-  
-  updateMainRoutineOnDisplay(String(diff));
-  oled.setCursor(0, 7);
-  oled.print("R/L: ");
-  oled.print(String(RLLights[0]));
-  oled.print(",");
-  oled.println(String(RLLights[1]));
 
-  oled.setCursor(0,5);
-  oled.print("Avg val:");
-  oled.println(String(environmentLightValue));
   if ( diff > threshold) {
     //move right
     updateDirection((char)'r');
@@ -369,6 +363,7 @@ void scanEnvLights() {
     w=3-abs(degIdx);
   }
   delay(w*rotationTime);
+  //move forward to overcome obstacle
   updateDirection((char)'f');
   delay(rotationTime*2);
 }
@@ -444,11 +439,6 @@ void updateObstacleDistanceStatus(int distance) {
   int valueX=(int)(x*255);
   int valueY=(int)(y*255);
   setRGBLEDColor(valueX, valueY, 0);
-  Serial.print("RGB:");
-  Serial.print(valueX);
-  Serial.print(",");
-  Serial.print(valueY);
-  Serial.println();
 }
 
 //Used to update the color of the RGBLED
@@ -492,6 +482,9 @@ void DisplayInformation() {
     String msg="Light(R/L): " + String(RLLights[0]);
     msg +="/"+String(RLLights[1]);
     oled.println(msg);
+    
+    oled.print("Avg val:");
+    oled.println(String(environmentLightValue));
     
     //Display distance to the wall
     String zone;
