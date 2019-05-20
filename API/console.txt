@@ -1,0 +1,15 @@
+2019-05-20 12:43:27: Handling obstacle..
+
+2019-05-20 12:44:01: Handling obstacle..
+
+2019-05-20 12:44:01: Handling obstacle..
+
+2019-05-20 12:44:18: Handling obstacle..
+
+2019-05-20 12:44:29: Handling obstacle..
+
+2019-05-20 12:44:43: Light source found!
+$console=Celebrating!
+
+2019-05-20 12:44:53: Shut down..
+

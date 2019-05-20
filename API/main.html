@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <div id="content">
+        <div class="monitors" id="console">
+            <h1>Console</h1>
+            <div>
+
+            </div>
+        </div>
+        <div class="monitors" id="data">
+            <h1>Sensor Readings</h1>
+            <div>
+                
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+function readConsoleFile() {
+    $.get('https://cors.io/?http://demiledge.com/assignment/console.txt', function(data) {
+        var lines = data.split("\n");
+        lines.forEach(element => {
+            $('div#console div').append('<p>' +element+ '</p>');
+        });
+        reorderData('div#console div');
+
+    }, "text");
+}
+
+function readReadingsFile() {
+    $.get('https://cors.io/?http://demiledge.com/assignment/displayInfo.txt', function(data) {
+        var lines = data.split("\n");
+        var newElement="<p>";
+        lines.forEach(element => {
+            if (element==="") {
+                newElement += element + '</p>';
+                $('div#data div').append(newElement);
+                newElement="<p>";
+            } else {
+                newElement += element +'<br>';
+            }
+        });
+        $("div#data div p").last().remove();
+        reorderData('div#data div');
+    }, "text");
+}
+
+readConsoleFile();
+readReadingsFile();
+
+setInterval(function() {
+    $('div.monitors div').html('');
+    readConsoleFile();
+    readReadingsFile();
+}, 5000);
+
+function reorderData(elementRef) {
+    var cont = $(elementRef);
+    var listItems = cont.children('p');
+
+    cont.append(listItems.get().reverse());
+}
+</script>
+<style>
+div#content {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    height: 400px;
+}
+
+div.monitors#data div{
+    overflow: overlay;
+    height: 400px;
+}
+
+div.monitors#console div{
+    overflow: overlay;
+    height: 400px;
+}
+</style>
+</html>

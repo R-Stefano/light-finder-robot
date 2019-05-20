@@ -1,0 +1,77 @@
+2019-05-20 12:43:38: Temperature: 25
+Humidity: 47
+Light(R/L): 86/82
+Environment value: 50
+Obstacle at 234 mm
+Zone: Yellow
+
+2019-05-20 12:43:40: Temperature: 26
+Humidity: 43
+Light(R/L): 62/58
+Environment value: 50
+Obstacle at 234 mm
+Zone: Yellow
+
+2019-05-20 12:44:01: Temperature: 26
+Humidity: 46
+Light(R/L): 88/85
+Environment value: 50
+Obstacle at 161 mm
+Zone: Red/Yellow
+
+2019-05-20 12:44:01: Temperature: 25
+Humidity: 45
+Light(R/L): 65/59
+Environment value: 50
+Obstacle at 171 mm
+Zone: Red/Yellow
+
+2019-05-20 12:44:01: Temperature: 26
+Humidity: 45
+Light(R/L): 65/61
+Environment value: 50
+Obstacle at 232 mm
+Zone: Yellow
+
+2019-05-20 12:44:11: Temperature: 26
+Humidity: 45
+Light(R/L): 63/60
+Environment value: 50
+Obstacle at 234 mm
+Zone: Yellow
+
+2019-05-20 12:44:13: Temperature: 27
+Humidity: 39
+Light(R/L): 63/60
+Environment value: 50
+Obstacle at 165 mm
+Zone: Red/Yellow
+
+2019-05-20 12:44:15: Temperature: 27
+Humidity: 42
+Light(R/L): 62/60
+Environment value: 50
+Obstacle at 235 mm
+Zone: Yellow
+
+2019-05-20 12:44:17: Temperature: 27
+Humidity: 42
+Light(R/L): 62/60
+Environment value: 50
+Obstacle at 232 mm
+Zone: Yellow
+
+2019-05-20 12:44:40: Temperature: 27
+Humidity: 42
+Light(R/L): 99/80
+Environment value: 50
+Obstacle at 234 mm
+Zone: Yellow
+
+2019-05-20 12:44:42: Temperature: 27
+Humidity: 38
+Light(R/L): 101/81
+Environment value: 50
+Obstacle at 239 mm
+Zone: Yellow
+
