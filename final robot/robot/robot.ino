@@ -123,9 +123,11 @@ void mainLoop() {
   updateObstacleDistanceStatus(avgDistance);
   //check if the closest object is above the minimum distance threshold
   if (avgDistance< distancesThre[0] && ((RLLights[0] + RLLights[1])/2)>environmentLightValue*2) {
-    Serial.println("Light source found!");
+    sendData("Light source found!", "console");
+    updateMainRoutineOnDisplay("Light source found!");
     updateDirection((char)'s');
-    Serial.println("Celebrating!");
+    sendData("Celebrating!", "console");
+    updateMainRoutineOnDisplay("Celebrating!");
     updateDirection((char)'l');
     activateBuzzer(500,250,10);
     updateDirection((char)'r');
@@ -141,10 +143,11 @@ void mainLoop() {
     }
     digitalWrite(rLED, LOW);
     digitalWrite(lLED, LOW);
+    sendData("Shut down..", "console");
     
   } else if (avgDistance< distancesThre[0]) {
-    Serial.println("Handling obstacle..");
-    //updateMainRoutineOnDisplay("Handling obstacle..");
+    sendData("Handling obstacle..", "console");
+    updateMainRoutineOnDisplay("Handling obstacle..");
     //stop the robot
     updateDirection((char)'s');
     //sound of obstacle found
@@ -158,15 +161,15 @@ void mainLoop() {
     //Check for new directions
     findNewRoute();
   } else {
-    Serial.println("Updating direction based on light..");
-    //updateMainRoutineOnDisplay("Following light..");
+    //sendData("Following light..", "console");
+    updateMainRoutineOnDisplay("Following light..");
     //keep adjusting the direction towards the light source
-    updateDirection();
+    assessDirection();
   }
 
   //every second update the screen
   if (timeCounter%1000==0) {
-    Serial.println("Updating screen..");
+    //sendData("Updating screen..", "console");
     DisplayInformation();
 
     timeCounter=0;
@@ -177,8 +180,8 @@ void mainLoop() {
 }
 
 void configuration() {
-    Serial.println("Configuring robot..");
-    Serial.println("1. Testing motors..");
+    sendData("Configuring robot..", "console");
+    sendData("1. Testing motors..", "console");
     oled.println("Configuring robot..");
     oled.println("1. Testing motors..");
     //testing motors, forw, backw, make 360 degree wheels turn, left and right
@@ -192,9 +195,8 @@ void configuration() {
     delay(rotationTime*8);
     updateDirection((char)'s');
 
-    Serial.println("2. Scanning for");
-    Serial.println("light sources..");
-    oled.println("2. Scanning for");
+    sendData("2. Scanning environment for light sources..", "console");
+    oled.println("2. Scanning environment for");
     oled.println("light sources..");
     //360degree scanning for light source
     scanEnvLights();
@@ -206,7 +208,7 @@ void configuration() {
 
 //This function is used to asses which direction
 //(left or right or neither) the robot should move based on the light source
-void updateDirection() {
+void assessDirection() {
   long diff=RLLights[0] - RLLights[1];
   int threshold=lightsDiffThreshold; //move right, left only if above this number
 
@@ -322,13 +324,12 @@ void updateLightsValues() {
 
 //360degree scanning, move by 45 deg each time
 void scanEnvLights() {
-  Serial.println("Scanning environment for lights..");
   int MaxValue=0;
   int direcIdxMaxValue=0;
   long totalVals=0;
   for (int i=0; i<8; i++) {
-    Serial.print("Degree:");
-    Serial.println(i*45);
+    //Serial.print("Degree:");
+    //Serial.println(i*45);
     //Make the light measurement
     int directionAvgValue=(analogRead(LDRRight) + analogRead(LDRLeft))/2;
     //check if new best value
@@ -432,10 +433,18 @@ void manageDirectionLEDs(int r, int l) {
 
 //Called to udpate the color of RGBLEDs based on distance to obstacle
 void updateObstacleDistanceStatus(int distance) {
-  float x=float(distancesThre[0])/float(avgDistance);
-  float y=float(avgDistance)/float(distancesThre[1]);
-  x= x>1? 1 : x;
-  y= y>1? 1 : y;
+  int midPoint=float(distancesThre[0])+ float(distancesThre[1])/float(2);
+
+  float x;
+  float y;
+  if (avgDistance > midPoint) {
+    x = 1 - (float(avgDistance)/float(distancesThre[1]));
+    x = x<0 ? 0:  x;
+    y = 1;
+  } else {
+    x = 1;
+    y = float(avgDistance)/float(midPoint);
+  }
   int valueX=(int)(x*255);
   int valueY=(int)(y*255);
   setRGBLEDColor(valueX, valueY, 0);
@@ -504,10 +513,25 @@ void DisplayInformation() {
     msg += "(mm)";
     oled.println(msg);
     oled.println("Zone: " + zone);
+
+    String inputData="Temperature: "+ String(dhsensor.temp) + 
+    "\nHumidity: " + String(dhsensor.humidity) +
+    "\nLight(R/L): " + String(RLLights[0]) + "/" + String(RLLights[1]) +
+    "\nEnvironment value: " + String(environmentLightValue) +
+    "\nObstacle at " + String(avgDistance) + " mm" +
+    "\nZone: " + String(zone);    
+
+    sendData(inputData, "display");
 }
 
 void updateMainRoutineOnDisplay(String msg) {
     //display it on the 6th line, available {0-7}
     oled.setCursor(0, 6);
     oled.println(msg);
+}
+
+void sendData(String data, String type) {
+  String inputData="$";
+  inputData+= type + "=" + data;
+  Serial.println(inputData);
 }

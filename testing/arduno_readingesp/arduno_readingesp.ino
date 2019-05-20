@@ -24,4 +24,13 @@ void loop() {
     Serial.print("message from exp:");
     Serial.println(readString);
   }
+
+  if (Serial.available()) {
+    String readdata=Serial.readString();
+    Serial.print("Data from out");
+    Serial.println(readdata);
+
+    //sending data to exp
+    mySerial.println(readdata);
+  }
 }
